@@ -471,15 +471,27 @@ async def videos_create(
     input_reference: Annotated[
         list[UploadFile] | None, File(alias="input_reference[]")
     ] = None,
+    input_reference_url: Annotated[
+        list[str] | None, Form(alias="input_reference_url[]")
+    ] = None,
 ):
     from .video import create_video
 
-    references_payload = None
+    references_payload: list[dict] = []
+
     if input_reference:
-        references_payload = [
-            {"image_url": await _upload_to_data_uri(f, param="input_reference")}
-            for f in input_reference[:5]
-        ]
+        for f in input_reference[:5]:
+            references_payload.append(
+                {"image_url": await _upload_to_data_uri(f, param="input_reference")}
+            )
+
+    if input_reference_url:
+        remaining = 5 - len(references_payload)
+        for url in input_reference_url[:remaining]:
+            url = url.strip()
+            if not url:
+                continue
+            references_payload.append({"image_url": url})
 
     result = await create_video(
         model=model or "grok-video",
@@ -488,7 +500,7 @@ async def videos_create(
         size=size or "720x1280",
         resolution_name=resolution_name,
         preset=preset,
-        input_references=references_payload,
+        input_references=references_payload or None,
     )
     return JSONResponse(result)
 
