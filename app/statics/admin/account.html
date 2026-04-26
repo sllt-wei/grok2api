@@ -1149,7 +1149,7 @@ function waitI18n() {
   initFilterMenu();
   const key = await adminKey.get();
   if (!key || !await verifyKey(ADMIN_API + '/verify', key).catch(() => false))
-    return location.href = '/admin/login';
+    return location.href = '/admin/login?returnTo=' + encodeURIComponent(location.pathname);
   load();
 })();
 
