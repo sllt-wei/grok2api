@@ -28,6 +28,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+      - ./config.toml:/app/config.toml
     restart: unless-stopped
 
   # 如果出口 IP 不干净，可取消以下注释使用 Warp 作为落地代理
