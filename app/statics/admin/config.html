@@ -1322,7 +1322,7 @@ function doReset() {
     await renderSiteFooter?.();
     const key = await adminKey.get();
     if (!key || !await verifyKey(ADMIN_API + '/verify', key).catch(() => false))
-      return location.href = '/admin/login?returnTo=' + encodeURIComponent(location.pathname);
+      return location.href = '/admin/login';
     await load();
   } catch (e) {
     console.error('config page boot failed', e);
